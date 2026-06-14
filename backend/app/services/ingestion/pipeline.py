@@ -53,11 +53,14 @@ async def run_import_pipeline(
     # Step 3: Detect anomalies
     decisions: list[RowDecision] = run_detection(normalized_rows)
 
+    from datetime import datetime, timezone
+    
     # Step 4: Persist — create ImportReport shell first (needed as FK)
     report_record = ImportReport(
         id=uuid.uuid4(),
         filename=filename,
         total_rows=parse_result.total_rows,
+        imported_at=datetime.now(timezone.utc),
     )
     db.add(report_record)
     await db.flush()  # Get the ID without committing
