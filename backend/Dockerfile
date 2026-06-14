@@ -7,5 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Run Alembic migrations and then start Uvicorn using the $PORT environment variable
-CMD alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Run Alembic migrations and then start Uvicorn
+CMD ["./start.sh"]
