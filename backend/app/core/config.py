@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Expense Import Service"
 
     # CORS — comma-separated string in .env to avoid pydantic-settings JSON parse issues
-    ALLOWED_ORIGINS: str = "http://localhost:5173"
+    ALLOWED_ORIGINS: str = "*"
 
     @property
     def allowed_origins_list(self) -> list[str]:
