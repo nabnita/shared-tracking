@@ -12,8 +12,12 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = "Expense Import Service"
 
-    # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
+    # CORS — comma-separated string in .env to avoid pydantic-settings JSON parse issues
+    ALLOWED_ORIGINS: str = "http://localhost:5173"
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.ALLOWED_ORIGINS.split(",") if o.strip()]
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
