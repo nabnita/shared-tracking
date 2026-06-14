@@ -1,0 +1,207 @@
+{
+  "filename": "Expenses Export.csv",
+  "import_id": "8488e08f-2f78-4ea1-8ab0-128a30d525ab",
+  "summary": {
+    "total_rows": 43,
+    "imported": 42,
+    "warnings": 4,
+    "rejected": 1
+  },
+  "decisions": [
+    {
+      "row_number": 6,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 6,
+          "category": "DUPLICATE_EXPENSE",
+          "severity": "warning",
+          "reason": "Probable duplicate of a previously imported expense: 'dinner - marina bites' on 2026-02-08 for 3200",
+          "resolution": "Flagged for user review."
+        }
+      ]
+    },
+    {
+      "row_number": 7,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 7,
+          "category": "AMOUNT_FORMAT_NORMALIZED",
+          "severity": "info",
+          "reason": "Amount contained commas which were stripped: '1,200' -> '1200'",
+          "resolution": "Amount normalized successfully."
+        }
+      ]
+    },
+    {
+      "row_number": 10,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 10,
+          "category": "AMOUNT_PRECISION_NORMALIZED",
+          "severity": "info",
+          "reason": "Amount had more than 2 decimal places: '899.995' -> '900.00'",
+          "resolution": "Amount rounded to 2 decimal places."
+        }
+      ]
+    },
+    {
+      "row_number": 13,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 13,
+          "category": "MISSING_PAYER",
+          "severity": "warning",
+          "reason": "Payer is missing and could not be inferred.",
+          "resolution": "Left payer blank. Requires manual reconciliation."
+        }
+      ]
+    },
+    {
+      "row_number": 14,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "settlement",
+      "anomalies": [
+        {
+          "row_number": 14,
+          "category": "SETTLEMENT_TRANSACTION",
+          "severity": "info",
+          "reason": "Description contains settlement keywords: 'Rohan paid Aisha back'",
+          "resolution": "Categorized as settlement. Ignored participant shares."
+        }
+      ]
+    },
+    {
+      "row_number": 15,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 15,
+          "category": "INVALID_PERCENTAGE_SPLIT",
+          "severity": "warning",
+          "reason": "Percentages sum to 110.0%, expected 100%.",
+          "resolution": "Imported as-is. Requires manual reconciliation."
+        }
+      ]
+    },
+    {
+      "row_number": 25,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 25,
+          "category": "DUPLICATE_EXPENSE",
+          "severity": "warning",
+          "reason": "Probable duplicate of a previously imported expense: 'Thalassa dinner' on 2026-03-11 for 2450",
+          "resolution": "Flagged for user review."
+        }
+      ]
+    },
+    {
+      "row_number": 26,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "refund",
+      "anomalies": [
+        {
+          "row_number": 26,
+          "category": "REFUND_TRANSACTION",
+          "severity": "info",
+          "reason": "Amount is negative (-30).",
+          "resolution": "Categorized as a refund."
+        }
+      ]
+    },
+    {
+      "row_number": 28,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 28,
+          "category": "MISSING_CURRENCY",
+          "severity": "info",
+          "reason": "Currency is missing.",
+          "resolution": "Defaulted currency to INR based on historical context."
+        }
+      ]
+    },
+    {
+      "row_number": 31,
+      "should_reject": true,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 31,
+          "category": "ZERO_AMOUNT",
+          "severity": "error",
+          "reason": "Expense amount cannot be zero.",
+          "resolution": "Row rejected."
+        }
+      ]
+    },
+    {
+      "row_number": 34,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 34,
+          "category": "AMBIGUOUS_DATE",
+          "severity": "warning",
+          "reason": "Ambiguous date format detected (DD-MM vs MM-DD possible): 04-05-2026",
+          "resolution": "Parsed using DD-MM-YYYY convention. Verify if incorrect."
+        }
+      ]
+    },
+    {
+      "row_number": 36,
+      "should_reject": false,
+      "has_warnings": false,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 36,
+          "category": "UNKNOWN_PARTICIPANT",
+          "severity": "info",
+          "reason": "New participant introduced: 'Meera'",
+          "resolution": "Created new user profile."
+        }
+      ]
+    },
+    {
+      "row_number": 42,
+      "should_reject": false,
+      "has_warnings": true,
+      "expense_type": "expense",
+      "anomalies": [
+        {
+          "row_number": 42,
+          "category": "CONFLICTING_SPLIT_INFO",
+          "severity": "warning",
+          "reason": "Split type is 'equal' but explicit share details were provided.",
+          "resolution": "Overrode 'equal' split type with explicit shares."
+        }
+      ]
+    }
+  ]
+}

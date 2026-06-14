@@ -1,118 +1,79 @@
 # Expense Import Service
 
-A production-quality full-stack expense management application that imports expense CSVs, detects data anomalies, stores cleaned data, and provides visibility into import decisions.
+A full-stack web application designed to safely ingest, normalize, and audit complex, messy expense CSVs. It features a robust anomaly detection engine that flags inconsistencies without aborting imports, ensuring maximum data retention.
 
-## Architecture
+## Features
+- **Fail-Safe Ingestion:** Malformed CSV rows generate warnings/errors but do not block valid rows from importing.
+- **Anomaly Detection:** Automatically flags duplicate transactions, ambiguous dates, formatting issues, percentage splits that don't equal 100%, and more.
+- **Auto-Categorization:** Infers Refunds and Settlements based on negative amounts and description keywords.
+- **Rich Dashboard:** A React/Vite UI that provides detailed reports on every imported CSV.
 
-```
-shared-tracking/
-├── backend/          # Python + FastAPI + SQLAlchemy + PostgreSQL
-├── frontend/         # React + Vite + TypeScript + TailwindCSS
-├── docs/             # Architecture, ERD, anomaly analysis
-└── docker-compose.yml
-```
+## AI Usage Acknowledgment
+**This project was heavily scaffolded and assisted by AI.**
+- **AI Agent:** Antigravity IDE (Gemini 3.1 Pro)
+- Please see the `AI_USAGE.md` file for details on the exact prompts used, tools utilized, and concrete instances where the AI made mistakes that required human intervention.
 
-## Tech Stack
+## Documentation
+- `SCOPE.md`: Contains the Anomaly Log (every data problem found in the CSV and how it was handled) and the Database Schema.
+- `DECISIONS.md`: The decision log explaining significant architectural choices.
+- `AI_USAGE.md`: Details the AI usage and debugging process.
+- `import_report.json`: An example JSON payload produced by the application when it ingests the `Expenses Export.csv`.
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3.12, FastAPI, SQLAlchemy 2, Alembic |
-| Database | PostgreSQL 16 |
-| Frontend | React 18, Vite 5, TypeScript, TailwindCSS 3 |
-| Containerization | Docker Compose |
-| Deployment | Render |
+---
 
-## Local Setup
+## Setup Instructions
 
 ### Prerequisites
 - Docker & Docker Compose
-- Node.js 20+
-- Python 3.12+
+- Node.js (v20+) & Python (3.12+) (if running bare-metal)
 
-### 1. Clone the repository
-
-```bash
-git clone <repo-url>
-cd shared-tracking
-```
-
-### 2. Configure environment variables
+### 1. Running Locally (Docker Compose)
+The easiest way to run the entire stack locally is using Docker Compose. This automatically spins up the PostgreSQL database, the FastAPI backend, and the React frontend.
 
 ```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+# Start all services
+docker-compose up -d --build
 ```
 
-### 3. Start with Docker Compose
+- **Frontend UI:** `http://localhost:5173`
+- **Backend API:** `http://localhost:8000`
+- **API Docs (Swagger):** `http://localhost:8000/docs`
 
-```bash
-docker compose up --build
-```
+*Note: Alembic database migrations run automatically when the backend container starts.*
 
-This starts:
-- PostgreSQL on port 5432
-- Backend API on http://localhost:8000
-- Frontend on http://localhost:5173
+### 2. Running Locally (Bare Metal)
 
-### 4. Run migrations
-
+#### Backend Setup
 ```bash
 cd backend
-alembic upgrade head
-```
-
-### 5. API Documentation
-
-FastAPI auto-generates OpenAPI docs at: http://localhost:8000/docs
-
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-| Variable | Description | Default |
-|---|---|---|
-| `DATABASE_URL` | Sync PostgreSQL URL (Alembic) | `postgresql://expense_user:expense_pass@localhost:5432/expense_db` |
-| `ASYNC_DATABASE_URL` | Async PostgreSQL URL (FastAPI) | `postgresql+asyncpg://...` |
-| `SECRET_KEY` | Application secret | — |
-| `ENVIRONMENT` | `development` or `production` | `development` |
-| `ALLOWED_ORIGINS` | CORS origins | `http://localhost:5173` |
-
-### Frontend (`frontend/.env`)
-
-| Variable | Description | Default |
-|---|---|---|
-| `VITE_API_BASE_URL` | Backend API URL | `http://localhost:8000/api/v1` |
-
-## Development
-
-### Backend only
-
-```bash
-cd backend
-python -m venv venv && source venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+
+# Start local postgres (or use your own)
+docker-compose up -d postgres
+
+# Run database migrations
+alembic upgrade head
+
+# Start server
+uvicorn app.main:app --reload --port 8000
 ```
 
-### Frontend only
-
+#### Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## Testing
+### 3. Deploying to Railway
+This project is configured to be deployed natively on Railway with zero configuration needed for building.
 
-```bash
-cd backend
-pytest --cov=app tests/ --cov-report=term-missing
-```
-
-## Deployment
-
-See [docs/deployment.md](docs/deployment.md) — updated after Phase 12.
-
----
-
-*See [SCOPE.md](SCOPE.md), [DECISIONS.md](DECISIONS.md), and [AI_USAGE.md](AI_USAGE.md) for full documentation.*
+1. **Create a PostgreSQL database** in your Railway project.
+2. **Deploy the Backend:** Connect your GitHub repo, select the `/backend` folder as the root directory. Railway will automatically detect the Dockerfile.
+   - Add the variable `DATABASE_URL` pointing to your Railway Postgres database.
+   - Add the variable `PORT` to bind to.
+3. **Deploy the Frontend:** Connect your GitHub repo again, select the `/frontend` folder as the root directory.
+   - Add the variable `VITE_API_URL` pointing to your deployed backend URL (e.g. `https://your-backend.up.railway.app/api/v1`).
+   - Railway will natively inject this variable into the Docker build phase and serve the React app via Nginx.
