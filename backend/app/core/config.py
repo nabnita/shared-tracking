@@ -4,7 +4,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://expense_user:expense_pass@localhost:5432/expense_db"
-    ASYNC_DATABASE_URL: str = "postgresql+asyncpg://expense_user:expense_pass@localhost:5432/expense_db"
+    
+    @property
+    def ASYNC_DATABASE_URL(self) -> str:
+        # Render provides postgres://, asyncpg needs postgresql+asyncpg://
+        return self.DATABASE_URL.replace("postgres://", "postgresql+asyncpg://").replace("postgresql://", "postgresql+asyncpg://")
 
     # Application
     SECRET_KEY: str = "change-me-in-production"
